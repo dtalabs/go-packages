@@ -6,17 +6,13 @@ import (
 	"sync"
 )
 
-// Registry associates spec types with driver instances for a set of endpoints.
-// Its zero value is ready to use. Register drivers before registering routes.
 type Registry struct {
 	mu      sync.RWMutex
 	drivers map[reflect.Type]Driver
 }
 
-// DefaultRegistry is used by RegisterDriver, Route.Register(), and Route.Register(nil).
 var DefaultRegistry = NewRegistry()
 
-// NewRegistry creates an independent registry and registers the supplied drivers.
 func NewRegistry(drivers ...Driver) *Registry {
 	registry := &Registry{}
 	for _, driver := range drivers {
@@ -25,8 +21,6 @@ func NewRegistry(drivers ...Driver) *Registry {
 	return registry
 }
 
-// RegisterDriver associates a concrete spec type with a driver in this registry.
-// Nil drivers, invalid spec types, and duplicate registrations panic.
 func (r *Registry) RegisterDriver(driver Driver) {
 	if driver == nil || (reflect.ValueOf(driver).Kind() == reflect.Pointer && reflect.ValueOf(driver).IsNil()) {
 		panic("transport: cannot register a nil driver")
@@ -46,7 +40,6 @@ func (r *Registry) RegisterDriver(driver Driver) {
 	r.drivers[specType] = driver
 }
 
-// registerRoute validates every spec before dispatching definitions for conversion.
 func (r *Registry) registerRoute(route *Route) {
 	r.mu.RLock()
 	selected := make([]Driver, 0, len(route.Specs))

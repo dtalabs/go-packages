@@ -1,7 +1,5 @@
 package ormhelper
 
-// Statement describes a query without depending on a database or ORM.
-// Conditions are combined with AND. The zero value has no filters or pagination.
 type Statement struct {
 	Conditions []Condition
 	Sort       []Sort

@@ -7,7 +7,6 @@ import (
 
 const transactionContextKey = "ormhelper/gorm/transaction"
 
-// WithTransaction carries a transaction connection to repository operations.
 func WithTransaction(ctx context.Context, tx *gormdb.DB) context.Context {
 	return context.WithValue(ctx, transactionContextKey, tx)
 }

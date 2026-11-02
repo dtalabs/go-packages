@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// resolver tracks recursive dependencies during automatic construction.
 type resolver struct {
 	container *Container
 	path      []reflect.Type

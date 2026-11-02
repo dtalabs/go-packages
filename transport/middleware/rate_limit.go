@@ -13,7 +13,6 @@ type rateLimitMiddleware struct {
 	clientIP func(context.Context) string
 }
 
-// LimitAttempts groups attempts by the client IP returned by the caller for HTTP.
 func LimitAttempts(limit int, window time.Duration, clientIP func(context.Context) string) transport.Middleware {
 	return &rateLimitMiddleware{
 		limiter:  limiter.New(limit, window),

@@ -7,8 +7,6 @@ import (
 	"sync"
 )
 
-// Container caches singleton instances. Its zero value is ready to use.
-// Resource ownership remains with the caller.
 type Container struct {
 	mu        sync.RWMutex
 	resolveMu sync.Mutex
@@ -35,8 +33,6 @@ func validateInstance(key reflect.Type, instance any) error {
 	return nil
 }
 
-// Register runs registration callbacks in order, stopping at the first error.
-// Registrations completed before an error remain registered.
 func (c *Container) Register(registrations ...func() error) error {
 	for _, register := range registrations {
 		if register == nil {
@@ -49,7 +45,6 @@ func (c *Container) Register(registrations ...func() error) error {
 	return nil
 }
 
-// RegisterInstance registers a value under its explicit type.
 func (c *Container) RegisterInstance[T any](instance T) error {
 	key := reflect.TypeFor[T]()
 	if err := validateInstance(key, instance); err != nil {
@@ -67,9 +62,6 @@ func (c *Container) RegisterInstance[T any](instance T) error {
 	return nil
 }
 
-// GetInstance resolves registered types or constructs a pointer to a struct.
-// Fields tagged di:"false" are skipped and retain their zero values.
-// Other exported fields are required dependencies; private state requires an explicitly registered instance.
 func (c *Container) GetInstance[T any]() T {
 	return c.Resolve(reflect.TypeFor[T]()).(T)
 }

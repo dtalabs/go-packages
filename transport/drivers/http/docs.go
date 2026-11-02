@@ -11,12 +11,10 @@ import (
 	"github.com/swaggest/openapi-go/openapi3"
 )
 
-// Docs collects routes during startup. OpenAPISpec freezes the OpenAPI document as YAML.
 type Docs struct {
 	reflector openapi3.Reflector
 }
 
-// Documentation holds the OpenAPI specification built by the HTTP driver.
 var Documentation = NewDocs("API", "1.0.0")
 
 func NewDocs(title, version string) *Docs {
@@ -36,7 +34,6 @@ func NewDocs(title, version string) *Docs {
 	return docs
 }
 
-// Add documents an HTTP route using its converted metadata.
 func (d *Docs) Add(route Route) error {
 	operation, err := d.reflector.NewOperationContext(route.Method, route.Path)
 	if err != nil {
@@ -76,7 +73,6 @@ func (d *Docs) Add(route Route) error {
 	return d.reflector.AddOperation(operation)
 }
 
-// OpenAPISpec serializes once, then serves the same document on every request.
 func (d *Docs) OpenAPISpec() HandlerFunc {
 	document, err := d.reflector.SpecEns().MarshalYAML()
 	if err != nil {
@@ -91,7 +87,6 @@ func (d *Docs) OpenAPISpec() HandlerFunc {
 	}
 }
 
-// Scalar renders the standalone Scalar API Reference UI pointing to specURL.
 func (d *Docs) Scalar(specURL string) HandlerFunc {
 	title := d.reflector.SpecEns().Info.Title
 	if title == "" {

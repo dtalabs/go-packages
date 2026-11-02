@@ -5,7 +5,6 @@ import (
 	"strings"
 )
 
-// AllowCORS accepts comma-separated origins or "*" to allow any origin.
 func AllowCORS(origins string) func(http.Handler) http.Handler {
 	allowed := make(map[string]struct{})
 	for _, origin := range strings.Split(origins, ",") {

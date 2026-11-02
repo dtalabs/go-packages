@@ -16,7 +16,7 @@ import (
 
 var queryDecoder = newTaggedDecoder("query")
 var paramDecoder = newTaggedDecoder("param")
-var paramNames sync.Map // map[reflect.Type][]string
+var paramNames sync.Map
 
 func newTaggedDecoder(tag string) *form.Decoder {
 	decoder := form.NewDecoder()
@@ -53,8 +53,6 @@ func ParseRequest[T any](w ResponseWriter, r *Request) (T, error) {
 	return request, nil
 }
 
-// bindRequest binds JSON, explicitly tagged query fields, and then path params.
-// URL-only fields should use json:"-" to exclude them from the request body.
 func bindRequest(r *Request, request any) error {
 	if r.Body != nil && r.Body != http.NoBody {
 		decoder := json.NewDecoder(io.LimitReader(r.Body, 1<<20))
@@ -92,7 +90,6 @@ func bindRequest(r *Request, request any) error {
 	return nil
 }
 
-// PathValue requires a name, so cache the names accepted by the param decoder.
 func requestParamNames(typ reflect.Type) []string {
 	if names, ok := paramNames.Load(typ); ok {
 		return names.([]string)

@@ -11,7 +11,6 @@ import (
 	"github.com/dtalabs/go-packages/ormhelper"
 )
 
-// Repository implements common creation and query methods for one entity type.
 type Repository[TEntity any] struct {
 	db         *gormdb.DB
 	newModel   func() interface{}
@@ -20,7 +19,6 @@ type Repository[TEntity any] struct {
 	toEntities func(interface{}) []TEntity
 }
 
-// NewRepository uses the persistence model's ToEntity method.
 func NewRepository[TEntity any, TModel Model[TEntity]](connection *gormdb.DB) Repository[TEntity] {
 	return Repository[TEntity]{
 		db:        connection,
@@ -57,7 +55,6 @@ func (r *Repository[TEntity]) CreateOne(ctx context.Context, input map[string]an
 	return r.toEntity(model), nil
 }
 
-// CreateMany inserts models in bulk and returns entities in input order.
 func (r *Repository[TEntity]) CreateMany(ctx context.Context, input []map[string]any) ([]TEntity, error) {
 	if len(input) == 0 {
 		return []TEntity{}, nil
@@ -115,12 +112,10 @@ func (r *Repository[TEntity]) FindMany(ctx context.Context, statement ormhelper.
 	return r.toEntities(models), nil
 }
 
-// UpdateOne applies supplied fields, including zero values, and returns the affected row count.
 func (r *Repository[TEntity]) UpdateOne(ctx context.Context, statement ormhelper.Statement, input map[string]any) (int64, error) {
 	return r.UpdateMany(ctx, statement, input)
 }
 
-// UpdateMany updates matching rows in one statement and returns the affected row count.
 func (r *Repository[TEntity]) UpdateMany(ctx context.Context, statement ormhelper.Statement, input map[string]any) (int64, error) {
 	query := r.Query(ctx, statement)
 	if query.Error != nil {
@@ -138,13 +133,11 @@ func (r *Repository[TEntity]) UpdateMany(ctx context.Context, statement ormhelpe
 	return result.RowsAffected, result.Error
 }
 
-// DeleteOne deletes matching records using the model's soft-delete behavior when available.
 func (r *Repository[TEntity]) DeleteOne(ctx context.Context, statement ormhelper.Statement) (int64, error) {
 	result := r.Query(ctx, statement).Delete(r.newModel())
 	return result.RowsAffected, result.Error
 }
 
-// DB uses the context transaction when present, otherwise the repository connection.
 func (r *Repository[TEntity]) DB(ctx context.Context) *gormdb.DB {
 	if tx := transactionFromContext(ctx); tx != nil {
 		return tx.WithContext(ctx)
@@ -152,14 +145,12 @@ func (r *Repository[TEntity]) DB(ctx context.Context) *gormdb.DB {
 	return r.db.WithContext(ctx)
 }
 
-// Query applies a statement to this repository's model for specialized operations.
 func (r *Repository[TEntity]) Query(ctx context.Context, statement ormhelper.Statement) *gormdb.DB {
 	return applyStatement(r.DB(ctx).Model(r.newModel()), statement)
 }
 
 var _ ormhelper.BaseRepository[struct{}] = (*Repository[struct{}])(nil)
 
-// applyStatement resolves Go model fields and translates the query into GORM clauses.
 func applyStatement(connection *gormdb.DB, statement ormhelper.Statement) *gormdb.DB {
 	if err := connection.Statement.Parse(connection.Statement.Model); err != nil {
 		connection.AddError(err)

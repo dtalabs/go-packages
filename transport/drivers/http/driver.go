@@ -17,18 +17,14 @@ func ExceptionResponse(w ResponseWriter, exception transport.Exception) {
 	JSONResponse(w, exception.Status, exception)
 }
 
-// Driver builds HTTP handlers and OpenAPI documentation.
 type Driver struct {
 	transport.RouteStore[Route]
 }
 
 func New() *Driver { return &Driver{} }
 
-// SpecType identifies the specification handled by this driver.
 func (*Driver) SpecType() reflect.Type { return reflect.TypeFor[HTTPSpec]() }
 
-// GetRoutes returns converted handlers and optionally OpenAPI/Scalar documentation.
-// Documentation errors panic during startup; handlers are not rebuilt.
 func (d *Driver) GetRoutes(includeDocs bool) []Route {
 	routes := append([]Route(nil), d.RouteStore.Routes...)
 	if includeDocs {

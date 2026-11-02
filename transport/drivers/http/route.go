@@ -20,7 +20,6 @@ type Route struct {
 	ResponseType reflect.Type
 }
 
-// From builds an HTTP route from its transport definition and HTTP specification.
 func (Route) From(source *transport.Route) (Route, error) {
 	if source == nil {
 		return Route{}, fmt.Errorf("missing HTTP route definition")

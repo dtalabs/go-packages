@@ -9,7 +9,6 @@ type TransactionManager interface {
 type Transaction interface {
 	Context(context.Context) context.Context
 	Ping(context.Context) error
-	// AfterCommit schedules side effects only after a successful commit.
 	AfterCommit(func())
 	Commit() error
 	Rollback() error
@@ -26,9 +25,6 @@ func TransactionFromContext(ctx context.Context) Transaction {
 	return tx
 }
 
-// RunInTransaction executes run with a transaction context and commits on success.
-// Errors and panics roll back a newly opened transaction. Nested calls share
-// the caller's transaction and leave its lifecycle to the caller.
 func RunInTransaction[Output any](ctx context.Context, manager TransactionManager, run func(context.Context) (Output, error)) (Output, error) {
 	if TransactionFromContext(ctx) != nil {
 		return run(ctx)

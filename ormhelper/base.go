@@ -2,7 +2,6 @@ package ormhelper
 
 import "context"
 
-// BaseRepository defines shared creation and query methods for an entity type.
 type BaseRepository[TEntity any] interface {
 	CreateOne(context.Context, map[string]any) (TEntity, error)
 	CreateMany(context.Context, []map[string]any) ([]TEntity, error)
