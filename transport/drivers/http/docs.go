@@ -106,7 +106,7 @@ func (d *Docs) Scalar(specURL string) HandlerFunc {
 			</style>
 		  </head>
 		  <body>
-			<script id="api-reference" data-url="%s"></script>
+			<script id="api-reference" data-url="%s" data-configuration='{"operationTitleSource":"path"}'></script>
 			<script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.74.0"></script>
 		  </body>
 		</html>`,
