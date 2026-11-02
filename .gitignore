@@ -1,0 +1,23 @@
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Go build and test artifacts
+bin/
+*.exe
+*.test
+*.prof
+coverage.out
+coverage.html
+
+# Local workspace configuration
+/go.work
+/go.work.sum
+
+# Local environment files
+.env
+.env.*
+!.env.example
